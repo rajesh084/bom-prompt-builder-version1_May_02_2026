@@ -1,309 +1,157 @@
-"use client";
+import Image from "next/image";
+import {
+  BadgeCheck,
+  Briefcase,
+  Building2,
+  Cloud,
+  Contact,
+  Cpu,
+  GraduationCap,
+  Network,
+  Radio,
+  Shield,
+} from "lucide-react";
 
-import { useMemo, useState } from "react";
+const expertise = [
+  "HPE Aruba Networking",
+  "Switching & Wireless",
+  "Cybersecurity",
+  "Cloud Solutions",
+  "Data Protection",
+  "Pre-Sales Consulting",
+  "Network Design & Architecture",
+  "Wi-Fi 6/6E",
+];
 
-const vendors = ["HPE Aruba", "Juniper", "Not Sure"];
+const experience = [
+  {
+    company: "CDW Canada",
+    role: "Networking Solutions Specialist",
+    period: "Jul 2025 - Present",
+  },
+  {
+    company: "Dell Technologies",
+    role: "Engineer 2 Product Technologist",
+    period: "Oct 2021 - Oct 2024",
+  },
+  { company: "Tech Mahindra", role: "Security Analyst", period: "May 2020 - Oct 2021" },
+  { company: "Cisco", role: "TAC Engineer", period: "Nov 2018 - May 2020" },
+  {
+    company: "Hewlett Packard Enterprise",
+    role: "Wireless Network Engineer",
+    period: "Feb 2017 - Nov 2018",
+  },
+];
 
-const requestTypes = [
-  "Access Point / Wi-Fi",
-  "Switching",
-  "Firewall / Security",
-  "ClearPass / NAC",
-  "Optics / DAC / Cables",
-  "Licensing / Support",
-  "Not Sure",
+const certifications = [
+  "HPE Sales Certified - Compute and Storage Solutions",
+  "Specialist - Technology Architect, Data Protection",
+  "Microsoft Azure Fundamentals",
+  "Dell GenAI Foundations",
+  "ITIL V4",
+  "Business English Certificate, B1 Level",
+];
+
+const projects = [
+  "AI-assisted BOM and RFI workflow",
+  "HPE Aruba opportunity discovery assistant",
+  "Customer-ready network proposal templates",
+  "Network solution architecture diagrams",
 ];
 
 export default function Home() {
-  const [imagePreview, setImagePreview] = useState<string>("");
-  const [fileName, setFileName] = useState<string>("");
-  const [vendor, setVendor] = useState("HPE Aruba");
-  const [requestType, setRequestType] = useState("Access Point / Wi-Fi");
-  const [context, setContext] = useState("");
-
-  function handleFile(file: File) {
-    const reader = new FileReader();
-
-    reader.onload = () => {
-      setImagePreview(reader.result as string);
-      setFileName(file.name);
-    };
-
-    reader.readAsDataURL(file);
-  }
-
-  const prompt = useMemo(() => {
-    return `You are an expert HPE Aruba and Juniper BOM assistant.
-
-Analyze the attached screenshot of a customer request.
-
-Context selected by Rajesh:
-- Vendor: ${vendor}
-- Request type: ${requestType}
-- Additional context: ${context || "None provided"}
-
-Please provide the following in a clear, structured way:
-
-1. Simple explanation of what this screenshot is about.
-
-2. Is the information adequate to build an accurate BOM for HPE Aruba or Juniper?
-   - Answer: Ready / Partially Ready / Not Ready
-   - Explain why.
-
-3. List all known requirements from the screenshot.
-
-4. List all missing information needed to build an accurate BOM.
-
-5. Suggest the likely BOM direction:
-   - Product category
-   - Licensing or subscription requirement
-   - Support requirement
-   - Accessories such as mounts, optics, DACs, power supplies, or power cords
-
-6. Draft a professional email to the customer:
-   - If BOM is ready: explain what will be included.
-   - If BOM is not ready: ask for the missing information.
-
-Important BOM checklist:
-
-For HPE Aruba access points:
-- AP model or series
-- Quantity
-- Indoor or outdoor
-- Mounting requirement
-- PoE availability
-- Aruba Central Foundation or Advanced licensing
-- Support term: 1, 3, or 5 years
-- Correct region, such as RW where applicable
-
-For HPE Aruba switches:
-- Port count
-- PoE requirement and PoE budget
-- Uplink speed
-- Copper or fiber
-- Optics or DAC requirement
-- Power supply requirement
-- Aruba Central licensing requirement
-- Foundation Care support term
-
-For Juniper switches:
-- EX or QFX model family
-- Port count
-- PoE requirement
-- Uplink speed
-- Optics or DAC requirement
-- Airflow direction, AFI or AFO, if data center switch
-- Mist Wired Assurance licensing
-- Support term
-
-For Juniper firewalls:
-- SRX model
-- Throughput or sizing requirement
-- HA requirement
-- Interface requirement
-- Power supply requirement
-- Security subscription or support requirement
-
-Response format:
-
-=== BOM ASSISTANT RESPONSE ===
-
-1. Summary:
-2. BOM Readiness:
-   - Status:
-   - Explanation:
-3. Known Requirements:
-4. Missing Information:
-5. Recommended BOM Direction:
-6. Draft Email to Customer:
-   - Subject:
-   - Email Body:
-7. Internal Notes for Rajesh:
-==============================`;
-  }, [vendor, requestType, context]);
-
-  async function copyPrompt() {
-    await navigator.clipboard.writeText(prompt);
-    alert("Prompt copied. Paste it into ChatGPT with your screenshot.");
-  }
-
-  async function copyPromptAndOpenChatGPT() {
-    await navigator.clipboard.writeText(prompt);
-    window.open("https://chatgpt.com", "_blank");
-  }
-
   return (
-    <main className="min-h-screen bg-slate-100 text-slate-900">
-      <header className="border-b bg-white">
-        <div className="mx-auto flex max-w-7xl items-center justify-between px-6 py-4">
+    <main className="bg-slate-950 text-slate-100">
+      <div className="mx-auto max-w-7xl px-6 py-10 md:px-10 md:py-16">
+        <section className="grid items-center gap-10 rounded-3xl border border-cyan-500/20 bg-slate-900/80 p-8 shadow-2xl shadow-cyan-950/20 backdrop-blur md:grid-cols-2 md:p-12">
           <div>
-            <h1 className="text-2xl font-bold text-blue-700">
-              BOM Prompt Builder
-            </h1>
-            <p className="text-sm text-slate-600">
-              Free prompt tool for HPE Aruba and Juniper BOM requests
+            <p className="mb-4 inline-flex items-center gap-2 rounded-full border border-cyan-400/30 bg-cyan-500/10 px-4 py-1 text-xs uppercase tracking-wider text-cyan-300">
+              <Network className="h-4 w-4" /> Enterprise Portfolio
             </p>
-          </div>
-
-          <div className="rounded-full bg-green-100 px-4 py-2 text-sm font-medium text-green-700">
-            No API Required
-          </div>
-        </div>
-      </header>
-
-      <div className="mx-auto grid max-w-7xl gap-6 px-6 py-6 lg:grid-cols-[1fr_1.1fr]">
-        <section className="space-y-5">
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <div className="mb-4 flex flex-wrap gap-3">
-              <button
-                onClick={copyPrompt}
-                className="rounded-xl border bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
-              >
-                Copy Prompt
-              </button>
-
-              <button
-                onClick={() => window.open("https://chatgpt.com", "_blank")}
-                className="rounded-xl border bg-white px-4 py-3 text-sm font-bold text-slate-700 hover:bg-slate-50"
-              >
-                Open ChatGPT
-              </button>
-
-              <button
-                onClick={copyPromptAndOpenChatGPT}
-                className="rounded-xl bg-blue-700 px-4 py-3 text-sm font-bold text-white hover:bg-blue-800"
-              >
-                Copy Prompt & Open ChatGPT
-              </button>
-            </div>
-
-            <h2 className="text-lg font-bold">1. Upload Screenshot</h2>
-            <p className="mt-1 text-sm text-slate-600">
-              This is only for preview. The app does not send it anywhere.
+            <h1 className="text-3xl font-semibold leading-tight text-white md:text-5xl">Rajesh R G</h1>
+            <p className="mt-3 text-lg text-cyan-200">Networking Solutions Specialist | Pre-Sales Engineer</p>
+            <p className="mt-6 max-w-xl text-slate-300">
+              Solutions Specialist at CDW Canada with 8+ years of experience in enterprise networking, HPE Aruba Networking,
+              cybersecurity, cloud solutions, data protection, and consultative pre-sales.
             </p>
-
-            <input
-              className="mt-4 block w-full rounded-xl border bg-white p-3"
-              type="file"
-              accept="image/*"
-              onChange={(event) => {
-                const file = event.target.files?.[0];
-                if (file) handleFile(file);
-              }}
-            />
-
-            {imagePreview ? (
-              <div className="mt-4 rounded-xl border bg-slate-50 p-3">
-                <div className="mb-3 text-sm text-slate-600">
-                  Uploaded: <span className="font-semibold">{fileName}</span>
-                </div>
-                <img
-                  src={imagePreview}
-                  alt="Screenshot preview"
-                  className="max-h-[380px] w-full rounded-lg object-contain"
-                />
-              </div>
-            ) : (
-              <div className="mt-4 rounded-xl border border-dashed p-10 text-center text-slate-500">
-                Upload a customer email, quote request, BOM screenshot, or chat screenshot.
-              </div>
-            )}
-          </div>
-
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-bold">2. Select Vendor</h2>
-            <div className="mt-3 grid grid-cols-3 gap-3">
-              {vendors.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => setVendor(item)}
-                  className={`rounded-xl border px-4 py-3 text-sm font-semibold ${
-                    vendor === item
-                      ? "border-blue-600 bg-blue-50 text-blue-700"
-                      : "bg-white text-slate-700"
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
+            <div className="mt-8 flex flex-wrap gap-3">
+              <a href="#contact" className="rounded-lg bg-cyan-500 px-5 py-3 text-sm font-semibold text-slate-950 transition hover:bg-cyan-400">View Resume</a>
+              <a href="#contact" className="rounded-lg border border-slate-600 px-5 py-3 text-sm font-semibold transition hover:border-cyan-400 hover:text-cyan-300">LinkedIn</a>
+              <a href="#contact" className="rounded-lg border border-slate-600 px-5 py-3 text-sm font-semibold transition hover:border-cyan-400 hover:text-cyan-300">Contact Me</a>
             </div>
           </div>
-
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-bold">3. Select Request Type</h2>
-            <div className="mt-3 grid grid-cols-2 gap-3">
-              {requestTypes.map((item) => (
-                <button
-                  key={item}
-                  onClick={() => setRequestType(item)}
-                  className={`rounded-xl border px-4 py-3 text-left text-sm font-semibold ${
-                    requestType === item
-                      ? "border-blue-600 bg-blue-50 text-blue-700"
-                      : "bg-white text-slate-700"
-                  }`}
-                >
-                  {item}
-                </button>
-              ))}
+          <div className="mx-auto w-full max-w-sm">
+            <div className="rounded-2xl border border-cyan-400/30 bg-gradient-to-b from-slate-800 to-slate-900 p-3 shadow-xl">
+              <Image
+                src="/rajesh-profile.png"
+                alt="Rajesh R G"
+                width={500}
+                height={500}
+                priority
+                className="h-auto w-full rounded-xl object-cover"
+              />
             </div>
-          </div>
-
-          <div className="rounded-2xl bg-white p-5 shadow-sm">
-            <h2 className="text-lg font-bold">4. Additional Context</h2>
-            <textarea
-              value={context}
-              onChange={(event) => setContext(event.target.value)}
-              maxLength={1000}
-              placeholder="Example: Customer has AP-505 today, wants to expand office Wi-Fi, support term unknown."
-              className="mt-3 h-32 w-full rounded-xl border p-3"
-            />
-            <p className="mt-1 text-right text-xs text-slate-500">
-              {context.length}/1000
-            </p>
           </div>
         </section>
 
-        <section className="space-y-5">
-          <div className="rounded-2xl border border-green-200 bg-green-50 p-5 shadow-sm">
-            <div className="flex items-center justify-between gap-3">
-              <div>
-                <h2 className="text-lg font-bold text-green-800">
-                  Your Prompt for ChatGPT
-                </h2>
-                <p className="text-sm text-green-700">
-                  Copy this and paste it into ChatGPT with your screenshot.
-                </p>
-              </div>
+        <section id="about" className="mt-16">
+          <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><Cpu className="h-5 w-5" /> About Me</h2>
+          <p className="rounded-xl border border-slate-700 bg-slate-900/70 p-6 leading-relaxed text-slate-300">
+            I partner with enterprise customers to align network and security outcomes with business priorities. My approach blends deep
+            technical insight with consultative engagement to design practical, scalable architectures across wired, wireless, cloud,
+            and data protection ecosystems.
+          </p>
+        </section>
 
-              <button
-                onClick={copyPrompt}
-                className="rounded-xl bg-green-700 px-4 py-3 text-sm font-bold text-white hover:bg-green-800"
-              >
-                Copy Prompt
-              </button>
+        <section className="mt-12">
+          <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><Radio className="h-5 w-5" /> Core Expertise</h2>
+          <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
+            {expertise.map((item) => (
+              <div key={item} className="rounded-xl border border-slate-700 bg-slate-900/70 p-4 text-slate-200 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/60">{item}</div>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-12">
+          <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><Briefcase className="h-5 w-5" /> Professional Experience</h2>
+          <div className="space-y-4">
+            {experience.map((job) => (
+              <article key={job.company} className="rounded-xl border border-slate-700 bg-slate-900/70 p-4 text-slate-200 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/60">
+                <p className="font-semibold text-white">{job.role}</p>
+                <p className="mt-1 text-cyan-300">{job.company}</p>
+                <p className="mt-1 text-sm text-slate-400">{job.period}</p>
+              </article>
+            ))}
+          </div>
+        </section>
+
+        <section className="mt-12 grid gap-8 lg:grid-cols-2">
+          <div>
+            <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><BadgeCheck className="h-5 w-5" /> Certifications</h2>
+            <div className="space-y-3">
+              {certifications.map((cert) => (
+                <p key={cert} className="rounded-xl border border-slate-700 bg-slate-900/70 p-4 text-slate-200 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/60">{cert}</p>
+              ))}
             </div>
-
-            <pre className="mt-4 max-h-[620px] overflow-auto whitespace-pre-wrap rounded-xl bg-white p-4 text-sm leading-6 text-slate-800">
-              {prompt}
-            </pre>
           </div>
 
-          <div className="rounded-2xl border border-amber-200 bg-amber-50 p-5">
-            <h2 className="font-bold text-amber-800">Checklist Reminder</h2>
-            <div className="mt-3 grid gap-2 text-sm sm:grid-cols-2">
-              <p>✓ Model or series</p>
-              <p>✓ Quantity</p>
-              <p>✓ Indoor or outdoor</p>
-              <p>✓ PoE availability</p>
-              <p>✓ Licensing</p>
-              <p>✓ Support term</p>
-              <p>✓ Mounts or accessories</p>
-              <p>✓ Optics, DACs, or power</p>
+          <div>
+            <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><Building2 className="h-5 w-5" /> Featured Projects</h2>
+            <div className="space-y-3">
+              {projects.map((project) => (
+                <p key={project} className="rounded-xl border border-slate-700 bg-slate-900/70 p-4 text-slate-200 transition duration-300 hover:-translate-y-0.5 hover:border-cyan-500/60">{project}</p>
+              ))}
             </div>
           </div>
+        </section>
 
-          <div className="rounded-2xl border border-blue-200 bg-blue-50 p-5 text-sm text-blue-800">
-            After copying the prompt, open ChatGPT, attach the same screenshot, paste the prompt, and send. You will get the explanation, BOM readiness, missing details, and customer email draft.
+        <section id="contact" className="mt-12">
+          <h2 className="mb-4 inline-flex items-center gap-2 text-xl font-semibold text-cyan-200"><Contact className="h-5 w-5" /> Contact</h2>
+          <div className="rounded-xl border border-slate-700 bg-slate-900/70 p-6 leading-relaxed text-slate-300 space-y-3">
+            <p>Open to strategic conversations on enterprise networking modernization, cybersecurity readiness, and scalable solution design.</p>
+            <p className="inline-flex items-center gap-2 text-cyan-300"><Shield className="h-4 w-4" /> rajesh.r.g@professionalmail.com</p>
+            <p className="inline-flex items-center gap-2 text-cyan-300"><Cloud className="h-4 w-4" /> LinkedIn profile available on request</p>
+            <p className="text-sm text-slate-400">© {new Date().getFullYear()} Rajesh R G. All rights reserved.</p>
           </div>
         </section>
       </div>
