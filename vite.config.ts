@@ -5,7 +5,11 @@ import { defineConfig } from "vite";
 export default defineConfig({
   plugins: [react(), tailwindcss()],
   server: {
-    // Allows temporary mobile preview URLs from localtunnel during development.
-    allowedHosts: [".loca.lt"],
+    // Allows temporary mobile preview URLs during development.
+    allowedHosts: [".loca.lt", ".trycloudflare.com"],
+  },
+  preview: {
+    // Vite preview has its own host allowlist.
+    allowedHosts: [".loca.lt", ".trycloudflare.com"],
   },
 });
