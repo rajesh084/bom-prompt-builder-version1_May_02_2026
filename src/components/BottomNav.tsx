@@ -7,12 +7,12 @@ interface NavItem {
 }
 
 const navItems: NavItem[] = [
-  { id: "daily", label: "Daily Brief", icon: "⌂" },
-  { id: "story", label: "Top Story", icon: "★" },
-  { id: "reel", label: "Reel Builder", icon: "▶" },
-  { id: "carousel", label: "Carousel", icon: "▦" },
-  { id: "planner", label: "Planner", icon: "□" },
-  { id: "analytics", label: "Analytics", icon: "↗" },
+  { id: "daily", label: "Daily Brief", icon: "DB" },
+  { id: "story", label: "Top Story", icon: "TS" },
+  { id: "reel", label: "Reel Builder", icon: "RB" },
+  { id: "carousel", label: "Carousel", icon: "CB" },
+  { id: "planner", label: "Planner", icon: "PL" },
+  { id: "analytics", label: "Analytics", icon: "AN" },
 ];
 
 interface BottomNavProps {
