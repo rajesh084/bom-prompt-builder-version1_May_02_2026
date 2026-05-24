@@ -1,36 +1,104 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# AI NetMind Daily
 
-## Getting Started
+Daily AI news turned into Instagram-ready content.
 
-First, run the development server:
+AI NetMind Daily is a modern React + Vite + TypeScript MVP for turning mock AI
+news into Instagram reels, carousel posts, captions, hashtags, and weekly
+planner items. It uses Tailwind CSS for a premium dark creator-dashboard UI and
+browser localStorage for MVP persistence.
+
+## Features
+
+- Daily Brief with mock AI news cards and creator stats
+- Top Story detail view with summary, why-it-matters, key takeaways, and angle
+- Reel Builder with editable hook, summary, CTA, voiceover, caption, and hashtags
+- Carousel Builder with editable 5-slide structure and preview
+- Weekly Planner with Draft, Scheduled, and Posted statuses
+- Analytics dashboard with mock metrics and CSS bar chart
+- localStorage persistence for selected story, drafts, and planner items
+- Built-in AI generation layer with AWS/backend endpoint support, optional
+  OpenAI browser-key support, and mock fallback
+
+## Tech Stack
+
+- React
+- Vite
+- TypeScript
+- Tailwind CSS
+
+## Local Setup
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open the local URL printed by Vite, usually `http://localhost:5173`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Production Build
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+```bash
+npm run build
+```
 
-## Learn More
+Preview the production build locally:
 
-To learn more about Next.js, take a look at the following resources:
+```bash
+npm run preview
+```
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## Environment Variables
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+Create a `.env` file from `.env.example` when you are ready to connect live AI
+services.
 
-## Deploy on Vercel
+```bash
+VITE_OPENAI_API_KEY=
+VITE_OPENAI_MODEL=gpt-4o-mini
+VITE_AI_GENERATION_ENDPOINT=
+```
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+Generation priority:
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+1. `VITE_AI_GENERATION_ENDPOINT` - recommended production path. Point this to an
+   AWS Lambda, API Gateway, or Amplify backend function that calls OpenAI, Bedrock,
+   or another AI provider securely.
+2. `VITE_OPENAI_API_KEY` - quick local testing path. This makes the browser call
+   OpenAI directly.
+3. Mock fallback - if no live AI config is present, the app still generates
+   usable sample content locally.
+
+Do not commit real API keys. For production, avoid exposing OpenAI keys in a
+frontend app. Use `VITE_AI_GENERATION_ENDPOINT` so your secret key stays on AWS.
+
+## Future API Integration Points
+
+Commented placeholders are available in `src/utils/generators.ts`, with live AI
+client logic in `src/utils/aiClient.ts`:
+
+- `fetchDailyAINews()`
+- `summarizeStoryWithAI()`
+- `generateInstagramReel()`
+- `generateCarouselSlides()`
+- `generateCaptionAndHashtags()`
+- `savePostToPlanner()`
+
+You can connect these to OpenAI, News API, RSS feeds, AWS Lambda, Amplify Data,
+AppSync, DynamoDB, or Bedrock.
+
+## AWS Amplify Deployment
+
+Use these Amplify build settings:
+
+- Build command: `npm run build`
+- Output directory: `dist`
+
+Recommended Amplify steps:
+
+1. Push this repo to GitHub.
+2. In AWS Amplify, choose "Host web app".
+3. Connect your GitHub repository and branch.
+4. Set the build command to `npm run build`.
+5. Set the output directory to `dist`.
+6. Optional: add environment variables for AI generation.
+7. Deploy.
