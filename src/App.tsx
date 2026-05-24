@@ -31,9 +31,13 @@ import {
   storeReelDraft,
   storeSelectedStory,
 } from "./utils/storage";
+import { getAiGenerationMode } from "./utils/aiClient";
 
 export default function App() {
   const [activeScreen, setActiveScreen] = useState<Screen>("daily");
+  const [generatingType, setGeneratingType] = useState<"reel" | "carousel" | null>(
+    null,
+  );
   const [selectedStory, setSelectedStory] = useState<NewsStory>(() => {
     return getStoredSelectedStory() ?? mockNewsStories[0];
   });
@@ -49,6 +53,7 @@ export default function App() {
 
   const currentReelDraft = reelDrafts[selectedStory.id] ?? null;
   const currentCarouselDraft = carouselDrafts[selectedStory.id] ?? null;
+  const aiMode = getAiGenerationMode();
 
   function selectStory(story: NewsStory) {
     setSelectedStory(story);
@@ -61,15 +66,27 @@ export default function App() {
   }
 
   async function buildReel() {
-    const draft = await generateInstagramReel(selectedStory);
-    setReelDrafts((current) => ({ ...current, [selectedStory.id]: draft }));
-    storeReelDraft(selectedStory.id, draft);
+    setGeneratingType("reel");
+
+    try {
+      const draft = await generateInstagramReel(selectedStory);
+      setReelDrafts((current) => ({ ...current, [selectedStory.id]: draft }));
+      storeReelDraft(selectedStory.id, draft);
+    } finally {
+      setGeneratingType(null);
+    }
   }
 
   async function buildCarousel() {
-    const draft = await generateCarouselSlides(selectedStory);
-    setCarouselDrafts((current) => ({ ...current, [selectedStory.id]: draft }));
-    storeCarouselDraft(selectedStory.id, draft);
+    setGeneratingType("carousel");
+
+    try {
+      const draft = await generateCarouselSlides(selectedStory);
+      setCarouselDrafts((current) => ({ ...current, [selectedStory.id]: draft }));
+      storeCarouselDraft(selectedStory.id, draft);
+    } finally {
+      setGeneratingType(null);
+    }
   }
 
   function updateReelDraft(draft: ReelDraft) {
@@ -132,7 +149,9 @@ export default function App() {
       case "reel":
         return (
           <ReelBuilderPage
+            aiMode={aiMode}
             draft={currentReelDraft}
+            isGenerating={generatingType === "reel"}
             story={selectedStory}
             onGenerate={() => void buildReel()}
             onSaveToPlanner={() => void addGeneratedPostToPlanner("Reel")}
@@ -142,7 +161,9 @@ export default function App() {
       case "carousel":
         return (
           <CarouselBuilderPage
+            aiMode={aiMode}
             draft={currentCarouselDraft}
+            isGenerating={generatingType === "carousel"}
             story={selectedStory}
             onGenerate={() => void buildCarousel()}
             onSaveToPlanner={() => void addGeneratedPostToPlanner("Carousel")}
@@ -170,8 +191,10 @@ export default function App() {
     }
   }, [
     activeScreen,
+    aiMode,
     currentCarouselDraft,
     currentReelDraft,
+    generatingType,
     plannerItems,
     selectedStory,
   ]);

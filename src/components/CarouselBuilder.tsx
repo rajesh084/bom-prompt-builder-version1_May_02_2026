@@ -3,12 +3,14 @@ import { CopyButton } from "./CopyButton";
 import { GradientButton } from "./GradientButton";
 
 interface CarouselBuilderProps {
+  isGenerating?: boolean;
   draft: CarouselDraft | null;
   onGenerate: () => void;
   onUpdate: (draft: CarouselDraft) => void;
 }
 
 export function CarouselBuilder({
+  isGenerating = false,
   draft,
   onGenerate,
   onUpdate,
@@ -31,11 +33,16 @@ export function CarouselBuilder({
   return (
     <div className="space-y-5">
       <div className="flex flex-wrap gap-3">
-        <GradientButton onClick={onGenerate} type="button">
-          Generate Carousel
+        <GradientButton disabled={isGenerating} onClick={onGenerate} type="button">
+          {isGenerating ? "Generating..." : "Generate Carousel with AI"}
         </GradientButton>
-        <GradientButton onClick={onGenerate} type="button" variant="secondary">
-          Regenerate
+        <GradientButton
+          disabled={isGenerating}
+          onClick={onGenerate}
+          type="button"
+          variant="secondary"
+        >
+          {isGenerating ? "Working..." : "Regenerate"}
         </GradientButton>
         {draft ? <CopyButton label="Copy Slides" value={slideText} /> : null}
       </div>

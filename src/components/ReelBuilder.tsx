@@ -3,6 +3,7 @@ import { CopyButton } from "./CopyButton";
 import { GradientButton } from "./GradientButton";
 
 interface ReelBuilderProps {
+  isGenerating?: boolean;
   draft: ReelDraft | null;
   onGenerate: () => void;
   onUpdate: (draft: ReelDraft) => void;
@@ -34,7 +35,12 @@ function Field({
   );
 }
 
-export function ReelBuilder({ draft, onGenerate, onUpdate }: ReelBuilderProps) {
+export function ReelBuilder({
+  isGenerating = false,
+  draft,
+  onGenerate,
+  onUpdate,
+}: ReelBuilderProps) {
   const captionValue = draft
     ? `${draft.caption}\n\n${draft.hashtags.join(" ")}`
     : "";
@@ -47,11 +53,16 @@ export function ReelBuilder({ draft, onGenerate, onUpdate }: ReelBuilderProps) {
   return (
     <div className="space-y-4">
       <div className="flex flex-wrap gap-3">
-        <GradientButton onClick={onGenerate} type="button">
-          Generate Reel
+        <GradientButton disabled={isGenerating} onClick={onGenerate} type="button">
+          {isGenerating ? "Generating..." : "Generate Reel with AI"}
         </GradientButton>
-        <GradientButton onClick={onGenerate} type="button" variant="secondary">
-          Regenerate
+        <GradientButton
+          disabled={isGenerating}
+          onClick={onGenerate}
+          type="button"
+          variant="secondary"
+        >
+          {isGenerating ? "Working..." : "Regenerate"}
         </GradientButton>
         {draft ? (
           <>

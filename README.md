@@ -16,7 +16,8 @@ browser localStorage for MVP persistence.
 - Weekly Planner with Draft, Scheduled, and Posted statuses
 - Analytics dashboard with mock metrics and CSS bar chart
 - localStorage persistence for selected story, drafts, and planner items
-- Placeholder functions for future OpenAI, News API, RSS, and AWS integration
+- Built-in AI generation layer with AWS/backend endpoint support, optional
+  OpenAI browser-key support, and mock fallback
 
 ## Tech Stack
 
@@ -53,13 +54,27 @@ services.
 
 ```bash
 VITE_OPENAI_API_KEY=
+VITE_OPENAI_MODEL=gpt-4o-mini
+VITE_AI_GENERATION_ENDPOINT=
 ```
 
-Do not commit real API keys. The current MVP does not call paid or live APIs.
+Generation priority:
+
+1. `VITE_AI_GENERATION_ENDPOINT` - recommended production path. Point this to an
+   AWS Lambda, API Gateway, or Amplify backend function that calls OpenAI, Bedrock,
+   or another AI provider securely.
+2. `VITE_OPENAI_API_KEY` - quick local testing path. This makes the browser call
+   OpenAI directly.
+3. Mock fallback - if no live AI config is present, the app still generates
+   usable sample content locally.
+
+Do not commit real API keys. For production, avoid exposing OpenAI keys in a
+frontend app. Use `VITE_AI_GENERATION_ENDPOINT` so your secret key stays on AWS.
 
 ## Future API Integration Points
 
-Commented placeholders are available in `src/utils/generators.ts`:
+Commented placeholders are available in `src/utils/generators.ts`, with live AI
+client logic in `src/utils/aiClient.ts`:
 
 - `fetchDailyAINews()`
 - `summarizeStoryWithAI()`
@@ -68,8 +83,8 @@ Commented placeholders are available in `src/utils/generators.ts`:
 - `generateCaptionAndHashtags()`
 - `savePostToPlanner()`
 
-You can later connect these to OpenAI, News API, RSS feeds, AWS Lambda,
-Amplify Data, AppSync, DynamoDB, or Bedrock.
+You can connect these to OpenAI, News API, RSS feeds, AWS Lambda, Amplify Data,
+AppSync, DynamoDB, or Bedrock.
 
 ## AWS Amplify Deployment
 
@@ -85,4 +100,5 @@ Recommended Amplify steps:
 3. Connect your GitHub repository and branch.
 4. Set the build command to `npm run build`.
 5. Set the output directory to `dist`.
-6. Deploy.
+6. Optional: add environment variables for AI generation.
+7. Deploy.

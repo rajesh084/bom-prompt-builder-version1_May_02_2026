@@ -4,7 +4,12 @@ import { Header } from "../components/Header";
 import type { CarouselDraft, NewsStory } from "../types";
 
 interface CarouselBuilderPageProps {
+  aiMode: {
+    label: string;
+    description: string;
+  };
   draft: CarouselDraft | null;
+  isGenerating: boolean;
   story: NewsStory;
   onGenerate: () => void;
   onSaveToPlanner: () => void;
@@ -12,7 +17,9 @@ interface CarouselBuilderPageProps {
 }
 
 export function CarouselBuilderPage({
+  aiMode,
   draft,
+  isGenerating,
   story,
   onGenerate,
   onSaveToPlanner,
@@ -36,8 +43,21 @@ export function CarouselBuilderPage({
         </p>
       </section>
 
+      <section className="mb-5 rounded-[2rem] border border-purple-300/20 bg-purple-300/10 p-4">
+        <p className="text-xs font-black uppercase tracking-[0.2em] text-purple-200">
+          AI Mode
+        </p>
+        <h2 className="mt-2 text-lg font-black text-white">{aiMode.label}</h2>
+        <p className="mt-2 text-sm leading-6 text-purple-50/80">
+          {isGenerating
+            ? "AI is building your carousel slides now..."
+            : aiMode.description}
+        </p>
+      </section>
+
       <CarouselBuilder
         draft={draft}
+        isGenerating={isGenerating}
         onGenerate={onGenerate}
         onUpdate={onUpdate}
       />

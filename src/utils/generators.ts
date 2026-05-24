@@ -5,6 +5,11 @@ import type {
   PlannerItem,
   ReelDraft,
 } from "../types";
+import {
+  generateAiCarouselDraft,
+  generateAiReelDraft,
+  summarizeWithAi,
+} from "./aiClient";
 
 // Future integration placeholder: replace this mock with News API, RSS feeds,
 // or an AWS Lambda/API Gateway endpoint that aggregates daily AI headlines.
@@ -14,8 +19,13 @@ export async function fetchDailyAINews(): Promise<NewsStory[]> {
 
 // Future integration placeholder: call OpenAI or another model to summarize
 // raw article text and normalize it into the NewsStory shape.
-export async function summarizeStoryWithAI(_story: NewsStory): Promise<string> {
-  throw new Error("Connect VITE_OPENAI_API_KEY-backed summarization here.");
+export async function summarizeStoryWithAI(story: NewsStory): Promise<string> {
+  try {
+    return (await summarizeWithAi(story)) ?? story.simpleSummary;
+  } catch (error) {
+    console.warn("AI summarization failed. Falling back to mock summary.", error);
+    return story.simpleSummary;
+  }
 }
 
 export function createMockReel(story: NewsStory): ReelDraft {
@@ -50,6 +60,26 @@ export function createMockReel(story: NewsStory): ReelDraft {
 export async function generateInstagramReel(
   story: NewsStory,
 ): Promise<ReelDraft> {
+  try {
+    const aiDraft = await generateAiReelDraft(story);
+
+    if (aiDraft) {
+      return {
+        storyId: story.id,
+        hook: aiDraft.hook,
+        summary: aiDraft.summary,
+        whyItMatters: aiDraft.whyItMatters,
+        cta: aiDraft.cta,
+        voiceover: aiDraft.voiceover,
+        caption: aiDraft.caption,
+        hashtags: aiDraft.hashtags,
+        updatedAt: new Date().toISOString(),
+      };
+    }
+  } catch (error) {
+    console.warn("AI reel generation failed. Falling back to mock reel.", error);
+  }
+
   return createMockReel(story);
 }
 
@@ -89,6 +119,23 @@ export function createMockCarousel(story: NewsStory): CarouselDraft {
 export async function generateCarouselSlides(
   story: NewsStory,
 ): Promise<CarouselDraft> {
+  try {
+    const aiDraft = await generateAiCarouselDraft(story);
+
+    if (aiDraft?.slides?.length) {
+      return {
+        storyId: story.id,
+        slides: normalizeCarouselSlides(aiDraft.slides, story),
+        updatedAt: new Date().toISOString(),
+      };
+    }
+  } catch (error) {
+    console.warn(
+      "AI carousel generation failed. Falling back to mock carousel.",
+      error,
+    );
+  }
+
   return createMockCarousel(story);
 }
 
@@ -97,11 +144,27 @@ export async function generateCarouselSlides(
 export async function generateCaptionAndHashtags(
   story: NewsStory,
 ): Promise<Pick<ReelDraft, "caption" | "hashtags">> {
-  const draft = createMockReel(story);
+  const draft = await generateInstagramReel(story);
   return {
     caption: draft.caption,
     hashtags: draft.hashtags,
   };
+}
+
+function normalizeCarouselSlides(
+  slides: CarouselSlide[],
+  story: NewsStory,
+): CarouselSlide[] {
+  const fallbackSlides = createMockCarousel(story).slides;
+
+  return fallbackSlides.map((fallback, index) => {
+    const slide = slides[index];
+
+    return {
+      title: slide?.title?.trim() || fallback.title,
+      body: slide?.body?.trim() || fallback.body,
+    };
+  });
 }
 
 export function createPlannerItemFromDraft(
